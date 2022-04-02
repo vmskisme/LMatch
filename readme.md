@@ -17,7 +17,6 @@ the return function accepts a any type javascript expression, return a boolean i
 
 match
 ```ts
-import { match } from "../src/match";
 
 let foo={x:1,y:2,z:[1,2,3]};
 
