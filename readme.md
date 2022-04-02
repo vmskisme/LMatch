@@ -1,5 +1,5 @@
 # A toy level pattern matching for javascript
-javascript only contains if-else and switch-case control flows, both of these control flows can lead to annoying nested structures when it comes to deconstruct a complex object and array. To solve this problem i developed a pattern matching, it was inspire by [rust pattern matchin](https://doc.rust-lang.org/std/keyword.match.html).
+javascript only contains if-else and switch-case control flows, both of these control flows can lead to annoying nested structures when it comes to deconstruct a complex object and array. To solve this problem i developed a pattern matching, it was inspire by [rust pattern matching](https://doc.rust-lang.org/std/keyword.match.html).
 
 
 ## Examples
