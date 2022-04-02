@@ -23,16 +23,16 @@ let foo={x:1,y:2,z:[1,2,3]};
 // function match(exp, obj)=>any
 let result = match(foo,{
     "{x:1,y:3}":(a)=>{
-        return "match {x:1,y:3}";
+        return a;
     },
     "{x:1,y:2,z:[1,2,3]}":(a)=>{
-        return "match {x:1,y:2,z:[1,2,3]}"; 
+        return a; 
     },
     "":(a)=>{
-        return "match any";
+        return a;
     }
 });
-console.log(result) // match {x:1,y:2,z:[1,2,3]}
+console.log(result) // {x:1,y:2,z:[1,2,3]}
 ```
 The first parameter of match is a expression(same as compile), the second parameter is an object that key is pattern and value is a function. when a pattern is matched, the call of corresponding function(parameter is expression above) is returned.
 
