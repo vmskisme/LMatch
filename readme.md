@@ -8,6 +8,7 @@ javascript only contains if-else and switch-case control flows, both of these co
 compile
 ```ts
 import {compile} from "src/match"
+
 let pattern = compile("{x:1,y:2}");
 console.log(pattern({x:2,y:2}) == true);
 ```
@@ -17,7 +18,7 @@ the return function accepts a any type javascript expression, return a boolean i
 
 match
 ```ts
-import { match } from "../src/match";
+import {match} from "src/match"
 
 let foo={x:1,y:2,z:[1,2,3]};
 

@@ -43,7 +43,7 @@ function parserObject(syntax: Syntax): AST {
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+skipI,
+            errorEnd: syntax.curScan + skipI,
             message: "expected an object syntax, given empty field",
             help: "",
         })
@@ -86,15 +86,15 @@ function parserObject(syntax: Syntax): AST {
                 state = COLON;
                 break;
             case COLON:
-                nextI = rawSyntax.slice(syntax.curScan).search(/\:/);
-                if (nextI == -1 || rawSyntax.slice(syntax.curScan,syntax.curScan+nextI).search(/[\,\[\]\{\}]/) != -1) {
+                nextI = rawSyntax.slice(syntax.curScan).search(/\S/);
+                if (nextI == -1 || rawSyntax[syntax.curScan + nextI] != ":") {
                     throw new LSyntaxError({
                         rawSyntax: rawSyntax,
                         start: syntax.start,
                         end: syntax.end,
                         errorStart: syntax.curScan,
                         errorEnd: syntax.curScan + nextI,
-                        message: "object expected ':' after a key, given" + rawSyntax[syntax.curScan],
+                        message: "object expected ':' after a key, given" + rawSyntax[syntax.curScan + (nextI == -1 ? 0 : nextI)],
                         help: "",
                     });
                 }
@@ -111,19 +111,19 @@ function parserObject(syntax: Syntax): AST {
                 state = COMMA;
                 break;
             case COMMA:
-                nextI = rawSyntax.slice(syntax.curScan).search(/[,\}]/);
-                if (nextI == -1 || syntax.curScan >= syntax.end) {
+                nextI = rawSyntax.slice(syntax.curScan).search(/\S/);
+                syntax.curScan += nextI;
+                if (nextI == -1 || syntax.curScan >= syntax.end || !(rawSyntax[syntax.curScan] in [',', '}'])) {
                     throw new LSyntaxError({
                         rawSyntax: rawSyntax,
                         start: syntax.start,
                         end: syntax.end,
                         errorStart: syntax.curScan,
                         errorEnd: syntax.curScan + nextI,
-                        message: "object value must be end with ',' or '}'" ,
+                        message: "object value must be end with ',' or '}'",
                         help: "",
                     });
                 }
-                syntax.curScan += nextI;
                 if (rawSyntax[syntax.curScan] == "}") {
                     state = END;
                 } else {
@@ -133,8 +133,8 @@ function parserObject(syntax: Syntax): AST {
                             start: syntax.start,
                             end: syntax.end,
                             errorStart: syntax.curScan - 3 - nextI,
-                            errorEnd: syntax.curScan+1,
-                            message: "Rest element must be last element" ,
+                            errorEnd: syntax.curScan + 1,
+                            message: "Rest element must be last element",
                             help: "",
                         });
                     }
@@ -166,8 +166,8 @@ function parserKey(syntax: Syntax): AST {
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+1,
-            message: "expected an object key, given empty field" ,
+            errorEnd: syntax.curScan + 1,
+            message: "expected an object key, given empty field",
             help: "",
         });
     }
@@ -194,7 +194,7 @@ function parserKey(syntax: Syntax): AST {
             end: syntax.end,
             errorStart: start,
             errorEnd: start + rawSyntax.slice(start).search(/[^\s\:\}]/),
-            message: "object key must be end with ':'" ,
+            message: "object key must be end with ':'",
             help: "",
         });
     }
@@ -219,8 +219,8 @@ function parserValue(syntax: Syntax, pause: string | undefined | null | RegExp =
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+1,
-            message: "expected an valid literal, given empty field" ,
+            errorEnd: syntax.curScan + 1,
+            message: "expected an valid literal, given empty field",
             help: "",
         });
     }
@@ -274,8 +274,8 @@ function parserBaseTypeLiteral(syntax: Syntax, pause: string | undefined | null 
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+1,
-            message: "expected an valid literal, given empty field" ,
+            errorEnd: syntax.curScan + 1,
+            message: "expected an valid literal, given empty field",
             help: "",
         });
     }
@@ -321,7 +321,7 @@ function parserBaseTypeLiteral(syntax: Syntax, pause: string | undefined | null 
                 end: syntax.end,
                 errorStart: start,
                 errorEnd: start + 1,
-                message: "expected an valid literal, given empty field" ,
+                message: "expected an valid literal, given empty field",
                 help: "",
             });
     }
@@ -354,8 +354,8 @@ function parserString(syntax: Syntax): AST {
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+1,
-            message: "expected an string, given empty field" ,
+            errorEnd: syntax.curScan + 1,
+            message: "expected an string, given empty field",
             help: "",
         });
     }
@@ -366,8 +366,8 @@ function parserString(syntax: Syntax): AST {
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+1,
-            message: "string must be start with single or double quotes" ,
+            errorEnd: syntax.curScan + 1,
+            message: "string must be start with single or double quotes",
             help: "",
         });
     }
@@ -380,7 +380,7 @@ function parserString(syntax: Syntax): AST {
             end: syntax.end,
             errorStart: syntax.curScan,
             errorEnd: syntax.end,
-            message: "string must be end with " + rawSyntax[start] == "'"?"single quote":"double quotes" ,
+            message: "string must be end with " + rawSyntax[start] == "'" ? "single quote" : "double quotes",
             help: "",
         });
     }
@@ -404,7 +404,7 @@ function parserArray(syntax: Syntax): AST {
             start: syntax.start,
             end: syntax.end,
             errorStart: syntax.curScan,
-            errorEnd: syntax.curScan+skipI,
+            errorEnd: syntax.curScan + skipI,
             message: "expected an Array syntax, given empty field",
             help: "",
         })
@@ -438,7 +438,7 @@ function parserArray(syntax: Syntax): AST {
                         rawSyntax: rawSyntax,
                         start: syntax.start,
                         end: syntax.end,
-                        errorStart: array.length>0?array[array.length-1].end:start,
+                        errorStart: array.length > 0 ? array[array.length - 1].end : start,
                         errorEnd: syntax.curScan,
                         message: "expected identifier",
                         help: "",
@@ -455,19 +455,19 @@ function parserArray(syntax: Syntax): AST {
                 state = NEXT;
                 break;
             case NEXT:
-                let nextI = rawSyntax.slice(syntax.curScan).search(/[\,\]]/);
-                if (nextI == -1) {
+                let nextI = rawSyntax.slice(syntax.curScan).search(/\S/);
+                syntax.curScan += nextI;
+                if (nextI == -1 || !(rawSyntax[syntax.curScan] in [',', ']'])) {
                     throw new LSyntaxError({
                         rawSyntax: rawSyntax,
                         start: syntax.start,
                         end: syntax.end,
                         errorStart: syntax.curScan,
                         errorEnd: syntax.curScan + nextI,
-                        message: "Array element must be end with ',' or ']'" ,
+                        message: "Array element must be end with ',' or ']'",
                         help: "",
                     });
                 }
-                syntax.curScan += nextI;
                 if (rawSyntax[syntax.curScan] == "]") {
                     state = END;
                 } else {
@@ -477,8 +477,8 @@ function parserArray(syntax: Syntax): AST {
                             start: syntax.start,
                             end: syntax.end,
                             errorStart: syntax.curScan - 3 - nextI,
-                            errorEnd: syntax.curScan+1,
-                            message: "Rest element must be last element" ,
+                            errorEnd: syntax.curScan + 1,
+                            message: "Rest element must be last element",
                             help: "",
                         });
                     }
