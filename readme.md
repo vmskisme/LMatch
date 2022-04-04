@@ -1,5 +1,5 @@
 # A toy level pattern matching for javascript
-javascript only contains if-else and switch-case control flows, both of these control flows can lead to annoying nested structures when it comes to deconstruct a complex object and array. To solve this problem i developed a pattern matching, it was inspire by [rust pattern matchin](https://doc.rust-lang.org/std/keyword.match.html).
+javascript only contains if-else and switch-case control flows, both of these control flows can lead to annoying nested structures when it comes to deconstruct a complex object and array. To solve this problem i developed a pattern matching, it was inspire by [rust pattern matching](https://doc.rust-lang.org/std/keyword.match.html).
 
 
 ## Examples
@@ -20,21 +20,22 @@ match
 ```ts
 import {match} from "src/match"
 
+
 let foo={x:1,y:2,z:[1,2,3]};
 
 // function match(exp, obj)=>any
 let result = match(foo,{
     "{x:1,y:3}":(a)=>{
-        return "match {x:1,y:3}";
+        return a;
     },
     "{x:1,y:2,z:[1,2,3]}":(a)=>{
-        return "match {x:1,y:2,z:[1,2,3]}"; 
+        return a; 
     },
     "":(a)=>{
-        return "match any";
+        return a;
     }
 });
-console.log(result) // match {x:1,y:2,z:[1,2,3]}
+console.log(result) // {x:1,y:2,z:[1,2,3]}
 ```
 The first parameter of match is a expression(same as compile), the second parameter is an object that key is pattern and value is a function. when a pattern is matched, the call of corresponding function(parameter is expression above) is returned.
 
